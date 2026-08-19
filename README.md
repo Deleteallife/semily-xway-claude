@@ -2,7 +2,7 @@
 
 Плагин для [Claude Code](https://code.claude.com): анализ конкурентов на Wildberries, генерация пяти обложек, A/B-тест изображений в XWAY по CTR и применение подтверждённого победителя.
 
-Это порт скилла Semily XWAY Studio 1.0.3 с Codex на Claude Code.
+Это порт скилла Semily XWAY Studio 1.0.3 с Codex на Claude Code. Версия для Codex — в отдельном репозитории [semily-xway-codex](https://github.com/Deleteallife/semily-xway-codex).
 
 ## Установка
 
