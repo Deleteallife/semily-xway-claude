@@ -45,10 +45,30 @@ if (Test-Path -LiteralPath $sourceCommands) {
 $mcpEntry = (Get-Content -Raw -LiteralPath $mcpConfigPath | ConvertFrom-Json).mcpServers.semily_xway
 $serverJson = $mcpEntry | ConvertTo-Json -Depth 10 -Compress
 
-$claudeCmd = Get-Command claude -ErrorAction SilentlyContinue
-if ($claudeCmd) {
-    & $claudeCmd.Source mcp remove semily_xway --scope user 2>$null | Out-Null
-    & $claudeCmd.Source mcp add-json semily_xway $serverJson --scope user
+function Find-ClaudeExecutable {
+    # 1. Обычная установка — claude в PATH.
+    $command = Get-Command claude -ErrorAction SilentlyContinue
+    if ($command) { return $command.Source }
+
+    # 2. Установка из Microsoft Store. Пакет пишет в AppData\Roaming через
+    #    виртуализацию, поэтому снаружи контейнера файл лежит в LocalCache.
+    # 3. Обычная установка без PATH.
+    $patterns = @(
+        (Join-Path $env:LOCALAPPDATA 'Packages\Claude_*\LocalCache\Roaming\Claude\claude-code\*\claude.exe'),
+        (Join-Path $env:APPDATA 'Claude\claude-code\*\claude.exe')
+    )
+    $candidate = Get-ChildItem -Path $patterns -ErrorAction SilentlyContinue |
+        Sort-Object LastWriteTime -Descending | Select-Object -First 1
+    if ($candidate) { return $candidate.FullName }
+
+    return $null
+}
+
+$claudeExe = Find-ClaudeExecutable
+if ($claudeExe) {
+    Write-Host "Claude CLI: $claudeExe"
+    & $claudeExe mcp remove semily_xway --scope user 2>$null | Out-Null
+    & $claudeExe mcp add-json semily_xway $serverJson --scope user
     if ($LASTEXITCODE -ne 0) {
         throw 'Не удалось зарегистрировать MCP-сервер semily_xway через Claude CLI.'
     }
@@ -81,9 +101,9 @@ if ($claudeCmd) {
 # Если Claude CLI доступен, открываем браузер сразу. Иначе вход делается через /mcp.
 
 Write-Host ''
-if ($claudeCmd -and $env:SEMILY_XWAY_SKIP_LOGIN -ne '1') {
+if ($claudeExe -and $env:SEMILY_XWAY_SKIP_LOGIN -ne '1') {
     Write-Host 'Открываю вход в Semily в браузере...'
-    & $claudeCmd.Source mcp login semily_xway
+    & $claudeExe mcp login semily_xway
     if ($LASTEXITCODE -eq 0) {
         Write-Host ''
         Write-Host 'Готово. Перезапустите Claude Code — скилл активен.'

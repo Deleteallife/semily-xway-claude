@@ -128,7 +128,23 @@ claude mcp login semily_xway
 
 **`Callback URL mismatch` при входе.** В настройках OAuth-приложения должен быть разрешён `http://localhost:4321/callback`. Claude Code v2.1.229 отправлял вместо него `http://127.0.0.1:4321/callback` — обновите Claude Code или временно разрешите обе формы.
 
-**Инструменты `semily_xway` не видны.** Выполните `/mcp` и проверьте статус сервера. Если он `needs authentication` — пройдите вход заново.
+**Инструменты `semily_xway` не видны / статус `Needs authentication`.** Нужно войти. Эта команда сама находит Claude CLI при любом способе установки:
+
+```bash
+& (Get-ChildItem "$env:LOCALAPPDATA\Packages\Claude_*\LocalCache\Roaming\Claude\claude-code\*\claude.exe","$env:APPDATA\Claude\claude-code\*\claude.exe" -ErrorAction SilentlyContinue | Sort-Object LastWriteTime | Select-Object -Last 1).FullName mcp login semily_xway
+```
+
+Проверить результат — та же команда с `mcp get semily_xway` вместо `mcp login semily_xway`. Должно быть `Status: ✓ Connected`.
+
+**`Имя ... не распознано` или `не удается найти путь` при запуске `claude.exe`.** Так бывает, когда Claude установлен из Microsoft Store. Упакованные приложения пишут в `AppData\Roaming` через виртуализацию, поэтому изнутри приложения путь выглядит как `AppData\Roaming\Claude\claude-code\...`, а снаружи того же каталога не существует — настоящий файл лежит в:
+
+```
+%LOCALAPPDATA%\Packages\Claude_pzs8sxrjxfjjc\LocalCache\Roaming\Claude\claude-code\<версия>\claude.exe
+```
+
+Команда выше учитывает оба варианта, поэтому её и стоит использовать вместо ручного пути.
+
+**Панели `/mcp` нет в десктопном приложении.** Это нормально: там нет этой команды. Вход выполняется командой выше.
 
 **Плагин установлен, но скилл не появился.** `/reload-plugins`, а если не помогло — `rm -rf ~/.claude/plugins/cache`, перезапуск Claude Code и переустановка плагина.
 
