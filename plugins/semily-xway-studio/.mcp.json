@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "semily_xway": {
+      "type": "http",
+      "url": "https://plugin.semily.ru/mcp",
+      "oauth": {
+        "clientId": "b7mFlRgJXJwBfF8DdGId8aCD4KvdwIr0",
+        "callbackPort": 4321
+      }
+    }
+  }
+}

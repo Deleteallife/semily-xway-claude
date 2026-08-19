@@ -1,0 +1,13 @@
+{
+  "name": "semily-xway-studio",
+  "displayName": "Semily XWAY Studio",
+  "version": "1.0.3",
+  "description": "Анализ WB, пять обложек и непрерывные XWAY-тесты: анализ конкурентов, генерация креативов, A/B-тест по CTR и применение победителя.",
+  "author": {
+    "name": "Semily",
+    "url": "https://semily.ru"
+  },
+  "homepage": "https://semily.ru",
+  "license": "MIT",
+  "keywords": ["wildberries", "wb", "xway", "marketplace", "creatives", "ab-test", "ctr"]
+}

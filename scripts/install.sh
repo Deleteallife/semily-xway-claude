@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+# Ручная установка Semily XWAY Studio как обычного скилла Claude Code.
+# Рекомендуемый способ — плагин: /plugin marketplace add Deleteallife/semily-xway-claude
+# Этот скрипт нужен, только если система плагинов не используется.
+
+set -euo pipefail
+
+repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+source_plugin="$repo_root/plugins/semily-xway-studio"
+source_skill="$source_plugin/skills/semily-xway-studio"
+source_commands="$source_plugin/commands"
+mcp_config="$source_plugin/.mcp.json"
+
+if [ ! -f "$source_skill/SKILL.md" ]; then
+  echo "Не найден SKILL.md в $source_skill. Запускайте скрипт из распакованного репозитория." >&2
+  exit 1
+fi
+
+claude_home="${CLAUDE_CONFIG_DIR:-$HOME/.claude}"
+target_skill="$claude_home/skills/semily-xway-studio"
+target_commands="$claude_home/commands/semily-xway"
+
+mkdir -p "$claude_home/skills" "$claude_home/commands"
+rm -rf "$target_skill"
+cp -R "$source_skill" "$target_skill"
+echo "Скилл установлен: $target_skill"
+
+if [ -d "$source_commands" ]; then
+  rm -rf "$target_commands"
+  cp -R "$source_commands" "$target_commands"
+  echo "Команды установлены: $target_commands  (/semily-xway:start, :status, :winner)"
+fi
+
+# --- Регистрация MCP-сервера ---
+
+if command -v claude >/dev/null 2>&1; then
+  server_json='{"type":"http","url":"https://plugin.semily.ru/mcp","oauth":{"clientId":"b7mFlRgJXJwBfF8DdGId8aCD4KvdwIr0","callbackPort":4321}}'
+  claude mcp remove semily_xway --scope user >/dev/null 2>&1 || true
+  claude mcp add-json semily_xway "$server_json" --scope user
+  echo "MCP-сервер semily_xway зарегистрирован (user scope)."
+else
+  echo "Claude CLI не найден — зарегистрируйте сервер вручную содержимым $mcp_config:" >&2
+  cat "$mcp_config" >&2
+  echo "Добавьте объект semily_xway в \"mcpServers\" файла ~/.claude.json." >&2
+fi
+
+echo
+echo "Готово. Перезапустите Claude Code, затем выполните /mcp и войдите в semily_xway."
+echo "Пример запуска: /semily-xway:start 123456789"

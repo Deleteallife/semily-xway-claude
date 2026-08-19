@@ -1,0 +1,26 @@
+{
+  "name": "semily",
+  "owner": {
+    "name": "Semily",
+    "url": "https://semily.ru"
+  },
+  "description": "Semily plugins for Claude Code: WB analysis, marketplace creatives and XWAY image tests.",
+  "plugins": [
+    {
+      "name": "semily-xway-studio",
+      "source": "./plugins/semily-xway-studio",
+      "displayName": "Semily XWAY Studio",
+      "description": "Анализ WB, пять обложек и непрерывные XWAY-тесты: анализ конкурентов, генерация креативов, A/B-тест по CTR и применение победителя.",
+      "version": "1.0.3",
+      "author": {
+        "name": "Semily",
+        "url": "https://semily.ru"
+      },
+      "homepage": "https://semily.ru",
+      "license": "MIT",
+      "category": "marketing",
+      "keywords": ["wildberries", "wb", "xway", "marketplace", "creatives", "ab-test", "ctr"],
+      "tags": ["wildberries", "xway", "creatives", "ab-testing"]
+    }
+  ]
+}
