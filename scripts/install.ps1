@@ -73,6 +73,25 @@ if ($claudeCmd) {
     Write-Host "MCP-сервер semily_xway записан в $configPath (резервная копия: $configPath.semily-backup)."
 }
 
+# --- Вход в Semily ---
+# Если Claude CLI доступен, открываем браузер сразу. Иначе вход делается через /mcp.
+
 Write-Host ''
-Write-Host 'Готово. Перезапустите Claude Code, затем выполните /mcp и войдите в semily_xway.'
+if ($claudeCmd -and $env:SEMILY_XWAY_SKIP_LOGIN -ne '1') {
+    Write-Host 'Открываю вход в Semily в браузере...'
+    & $claudeCmd.Source mcp login semily_xway
+    if ($LASTEXITCODE -eq 0) {
+        Write-Host ''
+        Write-Host 'Готово. Перезапустите Claude Code — скилл активен.'
+        Write-Host 'Пример запуска: /semily-xway:start 123456789'
+        exit 0
+    }
+    Write-Warning 'Автоматический вход не завершён — войдите вручную через /mcp.'
+}
+
+Write-Host 'Готово. Осталось войти в Semily:'
+Write-Host '  1. Откройте Claude Code (если он был запущен — перезапустите).'
+Write-Host '  2. Выполните /mcp, выберите semily_xway и нажмите Authenticate.'
+Write-Host '  3. Браузер откроется сам — введите логин Semily.'
+Write-Host ''
 Write-Host 'Пример запуска: /semily-xway:start 123456789'

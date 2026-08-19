@@ -44,6 +44,24 @@ else
   echo "Добавьте объект semily_xway в \"mcpServers\" файла ~/.claude.json." >&2
 fi
 
+# --- Вход в Semily ---
+# Если Claude CLI доступен, открываем браузер сразу. Иначе вход делается через /mcp.
+
 echo
-echo "Готово. Перезапустите Claude Code, затем выполните /mcp и войдите в semily_xway."
+if command -v claude >/dev/null 2>&1 && [ "${SEMILY_XWAY_SKIP_LOGIN:-}" != "1" ]; then
+  echo "Открываю вход в Semily в браузере..."
+  if claude mcp login semily_xway; then
+    echo
+    echo "Готово. Перезапустите Claude Code — скилл активен."
+    echo "Пример запуска: /semily-xway:start 123456789"
+    exit 0
+  fi
+  echo "Автоматический вход не завершён — войдите вручную через /mcp." >&2
+fi
+
+echo "Готово. Осталось войти в Semily:"
+echo "  1. Откройте Claude Code (если он был запущен — перезапустите)."
+echo "  2. Выполните /mcp, выберите semily_xway и нажмите Authenticate."
+echo "  3. Браузер откроется сам — введите логин Semily."
+echo
 echo "Пример запуска: /semily-xway:start 123456789"

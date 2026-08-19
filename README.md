@@ -4,7 +4,29 @@
 
 Это порт скилла Semily XWAY Studio 1.0.3 с Codex на Claude Code. Версия для Codex — в отдельном репозитории [semily-xway-codex](https://github.com/Deleteallife/semily-xway-codex).
 
-## Установка
+## Установка одной командой
+
+Самый короткий путь для сотрудника. Аккаунт GitHub и git не нужны.
+
+**Windows (PowerShell):**
+
+```bash
+irm https://raw.githubusercontent.com/Deleteallife/semily-xway-claude/main/scripts/bootstrap.ps1 | iex
+```
+
+**macOS / Linux:**
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Deleteallife/semily-xway-claude/main/scripts/bootstrap.sh | bash
+```
+
+Команда скачает репозиторий во временную папку, установит скилл и команды, зарегистрирует MCP-сервер и откроет вход в браузере. От пользователя нужен только логин Semily.
+
+Если Claude CLI не найден в PATH, вход делается в один клик уже внутри Claude Code: `/mcp` → `semily_xway` → **Authenticate**. Браузер откроется сам.
+
+> Команда выполняет скрипт из этого репозитория. Если политика компании это запрещает, используйте установку через маркетплейс ниже или скачайте `scripts/bootstrap.ps1` и запустите его локально.
+
+## Установка через маркетплейс плагинов
 
 В Claude Code выполните две команды:
 
