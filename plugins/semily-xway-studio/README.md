@@ -14,7 +14,7 @@
 ## Установка
 
 ```bash
-/plugin marketplace add Deleteallife/semily-xway-claude
+/plugin marketplace add https://github.com/Deleteallife/semily-xway-claude
 ```
 
 ```bash

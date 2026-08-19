@@ -9,12 +9,14 @@
 В Claude Code выполните две команды:
 
 ```bash
-/plugin marketplace add Deleteallife/semily-xway-claude
+/plugin marketplace add https://github.com/Deleteallife/semily-xway-claude
 ```
 
 ```bash
 /plugin install semily-xway-studio@semily
 ```
+
+Аккаунт GitHub не нужен — репозиторий публичный и клонируется анонимно. Указывайте именно полный адрес: короткая форма `Deleteallife/semily-xway-claude` клонируется по SSH и потребует ключа GitHub.
 
 Затем подключите аккаунт Semily:
 
@@ -35,7 +37,7 @@
 В обычном терминале (без запущенной сессии):
 
 ```bash
-claude plugin marketplace add Deleteallife/semily-xway-claude
+claude plugin marketplace add https://github.com/Deleteallife/semily-xway-claude
 ```
 
 ```bash
@@ -48,7 +50,7 @@ claude mcp login semily_xway
 
 ### В десктопном приложении Claude
 
-Откройте браузер плагинов в приложении и добавьте маркетплейс `Deleteallife/semily-xway-claude`, затем установите `semily-xway-studio`.
+Откройте браузер плагинов в приложении и добавьте маркетплейс `https://github.com/Deleteallife/semily-xway-claude`, затем установите `semily-xway-studio`.
 
 ## Использование
 
