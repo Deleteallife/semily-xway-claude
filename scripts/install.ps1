@@ -55,7 +55,11 @@ if ($claudeCmd) {
     Write-Host 'MCP-сервер semily_xway зарегистрирован (user scope).'
 } else {
     # Claude CLI недоступен — правим ~/.claude.json напрямую, с резервной копией.
-    $configPath = Join-Path $env:USERPROFILE '.claude.json'
+    $configPath = if ($env:SEMILY_XWAY_TEST_CONFIG_JSON) {
+        $env:SEMILY_XWAY_TEST_CONFIG_JSON
+    } else {
+        Join-Path $env:USERPROFILE '.claude.json'
+    }
     $config = if (Test-Path -LiteralPath $configPath) {
         Copy-Item -LiteralPath $configPath -Destination "$configPath.semily-backup" -Force
         Get-Content -Raw -LiteralPath $configPath | ConvertFrom-Json

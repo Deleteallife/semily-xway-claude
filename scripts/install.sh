@@ -39,9 +39,35 @@ if command -v claude >/dev/null 2>&1; then
   claude mcp add-json semily_xway "$server_json" --scope user
   echo "MCP-сервер semily_xway зарегистрирован (user scope)."
 else
-  echo "Claude CLI не найден — зарегистрируйте сервер вручную содержимым $mcp_config:" >&2
-  cat "$mcp_config" >&2
-  echo "Добавьте объект semily_xway в \"mcpServers\" файла ~/.claude.json." >&2
+  # Claude CLI недоступен — правим ~/.claude.json напрямую, с резервной копией.
+  config_json="${SEMILY_XWAY_TEST_CONFIG_JSON:-$HOME/.claude.json}"
+  py=""
+  for candidate in python3 python; do
+    if command -v "$candidate" >/dev/null 2>&1 && "$candidate" -c 'import json' >/dev/null 2>&1; then
+      py="$candidate"; break
+    fi
+  done
+
+  if [ -n "$py" ]; then
+    [ -f "$config_json" ] && cp "$config_json" "$config_json.semily-backup"
+    "$py" - "$config_json" "$mcp_config" <<'PYEOF'
+import json, os, sys
+config_path, mcp_path = sys.argv[1], sys.argv[2]
+entry = json.load(open(mcp_path, encoding="utf-8"))["mcpServers"]["semily_xway"]
+config = {}
+if os.path.exists(config_path):
+    with open(config_path, encoding="utf-8") as fh:
+        config = json.load(fh)
+config.setdefault("mcpServers", {})["semily_xway"] = entry
+with open(config_path, "w", encoding="utf-8") as fh:
+    json.dump(config, fh, ensure_ascii=False, indent=2)
+PYEOF
+    echo "MCP-сервер semily_xway записан в $config_json (резервная копия: $config_json.semily-backup)."
+  else
+    echo "Claude CLI и Python не найдены — зарегистрируйте сервер вручную содержимым $mcp_config:" >&2
+    cat "$mcp_config" >&2
+    echo "Добавьте объект semily_xway в \"mcpServers\" файла $config_json." >&2
+  fi
 fi
 
 # --- Вход в Semily ---
